@@ -1,3 +1,6 @@
+use serde_json::Result;
+
+
 pub enum CurrentScreen { // to keep track of what screen is being displayed
     Main,
     Editing,
