@@ -28,5 +28,10 @@ impl App {
         }
     }
 
-
+    pub fn save_key_value(&mut self) {
+        self.pairs.insert(self.key_input.clone(), self.value_input.clone());
+        self.key_input = String::new();
+        self.value_input = String::new();
+        self.currently_editing = None;
+    }
 }
