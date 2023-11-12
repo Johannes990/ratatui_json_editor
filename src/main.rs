@@ -1,7 +1,19 @@
-use crossterm::event::{EnableMouseCapture, DisableMouseCapture};
+use crossterm::event::{EnableMouseCapture, DisableMouseCapture, Event, KeyCode, KeyEventKind};
 use crossterm::execute;
 use crossterm::terminal::{enable_raw_mode, EnterAlternateScreen, disable_raw_mode, LeaveAlternateScreen};
-use std::io;
+use std::{error::Error, io};
+use ratatui::{
+    backend::{Backend, CrosstermBackend},
+    Terminal,
+}
+
+mod app:
+mod ui;
+
+use crate::{
+    app::{App, CurrentlyEditing, CurrentScreen},
+    ui::ui,
+};
 
 
 fn main() -> Result<(), Box<dyn Error>> {
