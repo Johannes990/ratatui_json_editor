@@ -31,6 +31,20 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
     .block(title_block);
 
     f.render_widget(title, chunks[0]);
+
+
+    let mut list_items = Vec::<ListItem>::new();
+
+    for key in app.pairs.keys() {
+        list_items.push(ListItem::new(Line::from(Span::styled(
+            format!("{: <25} : {}", key, app.pairs.get(key).unwrap()),
+            Style::default().fg(Color::Yellow),
+        ))));
+    }
+
+    let list = List::new(list_items);
+
+    f.render_widget(list, chunk[1]);
 }
 
 /// helper function to create a centered rectangle using a certain percentage
