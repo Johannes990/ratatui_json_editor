@@ -84,6 +84,29 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
 
     let mode_footer = Paragraph::new(Line::from(current_navigation_text))
         .block(Block::default().borders(Borders::ALL));
+
+    let current_keys_hint = {
+        match app.current_screen {
+            CurrentScreen::Main => Span::styled(
+                "(q) to quit / (e) to make new pair", Style::default().fg(Color::Red)
+            ),
+            CurrentScreen::Editing => Span::styled(
+                "(ESC) to cancel / (Tab) to switch boxes / (ENTER) to complete",
+                Style::default().fg(Color::Red),
+            ),
+            CurrentScreen::Exiting => Span::styled(
+                "(q) to quit / (e) to make new pair",
+                Style::default().fg(Color::Red),
+            ),
+        }
+    };
+
+    let key_notes_footer = Paragraph::new(Line::from(current_keys_hint)).bloc(Block::default().borders(Borders::ALL));
+
+    let footer_chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(chunks[2]);
 }
 
 /// helper function to create a centered rectangle using a certain percentage
