@@ -52,7 +52,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
         match app.current_screen {
             CurrentScreen::Main => Span::styled("Normal Mode", Style::default().fg(Color::Green)),
             CurrentScreen::Editing => {
-                Span::styled("Editing Json key", Style::default().fg(Color::Yellow))
+                Span::styled("Editing Mode", Style::default().fg(Color::Yellow))
             }
             CurrentScreen::Exiting => {
                 Span::styled("Exiting!", Style::default().fg(Color::LightRed))
@@ -113,9 +113,9 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
     // draw popup block
     if let Some(editing) = &app.currently_editing {
         let popup_block = Block::default()
-            .title("Enter a new keey-value pair")
+            .title("Enter a new key-value pair")
             .borders(Borders::NONE)
-            .style(Style::default().fg(Color::DarkGrey));
+            .style(Style::default().bg(Color::DarkGrey));
 
         let area = centered_rect(60, 25, f.size());
         f.render_widget(popup_block, area);
@@ -140,14 +140,14 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
 
         let value_text = Paragraph::new(app.value_input.clone()).block(value_block);
         f.render_widget(value_text, popup_chunks[1]);
-    };
+    }
 
     if let CurrentScreen::Exiting = app.current_screen {
         f.render_widget(Clear, f.size()); // this clears everything already drawn
         let popup_block = Block::default()
             .title("Y/N")
             .borders(Borders::NONE)
-            .style(Style::default().fg(Color::DarkGray));
+            .style(Style::default().bg(Color::DarkGray));
 
         let exit_text = Text::styled(
             "Would you like to output the buffer as json? (y/n)",
@@ -171,9 +171,9 @@ fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
     let popup_layout = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage((100 - percent_x) / 2),
-            Constraint::Percentage(percent_x),
-            Constraint::Percentage((100 - percent_x) / 2),
+            Constraint::Percentage((100 - percent_y) / 2),
+            Constraint::Percentage(percent_y),
+            Constraint::Percentage((100 - percent_y) / 2),
         ])
         .split(r); 
     
