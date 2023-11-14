@@ -42,9 +42,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
             Style::default().fg(Color::Yellow),
         ))));
     }
-
     let list = List::new(list_items);
-
     f.render_widget(list, chunks[1]);
 
 
@@ -107,6 +105,21 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(chunks[2]);
+
+    f.render_widget(mode_footer, footer_chunks[0]);
+    f.render_widget(key_notes_footer, footer_chunks[1]);
+
+
+    // draw popup block
+    if let Some(editing) = &app.currently_editing {
+        let popup_block = Block::default()
+            .title("Enter a new keey-value pair")
+            .borders(Borders::NONE)
+            .style(Style::default().fg(Color::DarkGrey));
+
+        let area = centered_rect(60, 25, f.size());
+        f.render_widget(popup_block, area);
+    }
 }
 
 /// helper function to create a centered rectangle using a certain percentage
