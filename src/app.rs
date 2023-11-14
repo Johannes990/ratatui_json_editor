@@ -1,4 +1,5 @@
 use serde_json::Result;
+use std::collections::HashMap;
 
 
 pub enum CurrentScreen { // to keep track of what screen is being displayed
@@ -17,7 +18,7 @@ pub struct App {
     pub value_input: String,                // the currently being edited json value
     pub pairs: HashMap<String, String>,     // representation of our key-value pairs with serde serialization support
     pub current_screen: CurrentScreen,       // current screen the user is looking at, will determine what is rendered
-    pub currently_editing: CurrentlyEditing // the optional state containing which of the key or value pairs the user is editing
+    pub currently_editing: Option<CurrentlyEditing> // the optional state containing which of the key or value pairs the user is editing
 }
 
 impl App {
@@ -49,7 +50,7 @@ impl App {
         }
     }
 
-    pub print_json(&self) -> Result<()> {
+    pub fn print_json(&self) -> Result<()> {
         let output = serde_json::to_string(&self.pairs)?;
         println!("{}", output);
         Ok(())

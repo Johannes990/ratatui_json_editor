@@ -1,13 +1,14 @@
 use crossterm::event::{EnableMouseCapture, DisableMouseCapture, Event, KeyCode, KeyEventKind};
 use crossterm::execute;
+use crossterm::event;
 use crossterm::terminal::{enable_raw_mode, EnterAlternateScreen, disable_raw_mode, LeaveAlternateScreen};
 use std::{error::Error, io};
 use ratatui::{
     backend::{Backend, CrosstermBackend},
     Terminal,
-}
+};
 
-mod app:
+mod app;
 mod ui;
 
 use crate::{
@@ -24,8 +25,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     // create new App
     let backend = CrosstermBackend::new(stderr);
     let mut terminal = Terminal::new(backend)?;
-    let mut App = App::new();
-    let res = run__app(&mut terminal, &mut app);
+    let mut app = App::new();
+    let res = run_app(&mut terminal, &mut app);
 
     // restore terminal
     disable_raw_mode()?;
@@ -49,7 +50,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> io::Result<bool> {
     loop {
-        teminal.draw(|f| ui(f, app))?;
+        terminal.draw(|f| ui(f, app))?;
 
         if let Event::Key(key) = event::read()? {
             if key.kind == event::KeyEventKind::Release {
@@ -92,8 +93,8 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> io::Result<
                                     }
                                 }
                             }
-                        }
-                        KeyCode::BackSpace => {
+                        },
+                        KeyCode::Backspace => {
                             if let Some(editing) = &app.currently_editing {
                                 match editing {
                                     CurrentlyEditing::Key => {
@@ -104,14 +105,14 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> io::Result<
                                     }
                                 }
                             }
-                        }
+                        },
                         KeyCode::Esc => {
-                            app.current_screen + CurrentScreen::Main;
+                            app.current_screen = CurrentScreen::Main;
                             app.currently_editing = None;
-                        }
+                        },
                         KeyCode::Tab => {
-                            app.toggle_editing():
-                        }
+                            app.toggle_editing();
+                        },
                         KeyCode::Char(value) => {
                             if let Some(editing) = &app.currently_editing {
                                 match editing { 
@@ -123,9 +124,11 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> io::Result<
                                     }
                                 }
                             }
-                        }
+                        },
+                        _ => {},
                     }
-                }
+                },
+                _ => {},
             }
         }
     }
