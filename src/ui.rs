@@ -10,7 +10,7 @@ use ratatui::{
 use crate::app::{App, CurrentScreen, CurrentlyEditing};
 
 
-pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
+pub fn ui<B: Backend>(f: &mut Frame<'_>, app: &App) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
@@ -71,7 +71,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
                         Span::styled("Editing Json key", Style::default().fg(Color::Green))
                     },
                     CurrentlyEditing::Value => {
-                        Span::styled("Editing Json value", Style::default().fg(Color::LightGray))
+                        Span::styled("Editing Json value", Style::default().fg(Color::LightGreen))
                     },
                 }
             } else {
@@ -99,7 +99,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
         }
     };
 
-    let key_notes_footer = Paragraph::new(Line::from(current_keys_hint)).bloc(Block::default().borders(Borders::ALL));
+    let key_notes_footer = Paragraph::new(Line::from(current_keys_hint)).block(Block::default().borders(Borders::ALL));
 
     let footer_chunks = Layout::default()
         .direction(Direction::Horizontal)
@@ -115,7 +115,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
         let popup_block = Block::default()
             .title("Enter a new key-value pair")
             .borders(Borders::NONE)
-            .style(Style::default().bg(Color::DarkGrey));
+            .style(Style::default().bg(Color::DarkGray));
 
         let area = centered_rect(60, 25, f.size());
         f.render_widget(popup_block, area);
@@ -185,5 +185,5 @@ fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
             Constraint::Percentage(percent_x),
             Constraint::Percentage((100 - percent_x) / 2),
         ])
-        .split(popup_layout[1])[1]; // return the middle chunk
+        .split(popup_layout[1])[1] // return the middle chunk
 }
