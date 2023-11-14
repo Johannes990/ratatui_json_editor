@@ -50,7 +50,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
     let current_navigation_text = vec![
         // the first half of text
         match app.current_screen {
-            CurrentScreen::Main => Span::styled("Normal Mode", Style::default().fg(Color::Green))
+            CurrentScreen::Main => Span::styled("Normal Mode", Style::default().fg(Color::Green)),
             CurrentScreen::Editing => {
                 Span::styled("Editing Json key", Style::default().fg(Color::Yellow))
             }
@@ -119,6 +119,48 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &App) {
 
         let area = centered_rect(60, 25, f.size());
         f.render_widget(popup_block, area);
+        
+        let popup_chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .margin(1)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(area);
+
+        let mut key_block = Block::default().title("Key").borders(Borders::ALL);
+        let mut value_block = Block::default().title("Value").borders(Borders::ALL);
+        let active_style = Style::default().bg(Color::LightYellow).fg(Color::Black);
+
+        match editing {
+            CurrentlyEditing::Key => key_block = key_block.style(active_style),
+            CurrentlyEditing::Value => value_block = value_block.style(active_style),
+        };
+
+        let key_text = Paragraph::new(app.key_input.clone()).block(key_block);
+        f.render_widget(key_text, popup_chunks[0]);
+
+        let value_text = Paragraph::new(app.value_input.clone()).block(value_block);
+        f.render_widget(value_text, popup_chunks[1]);
+    };
+
+    if let CurrentScreen::Exiting = app.current_screen {
+        f.render_widget(Clear, f.size()); // this clears everything already drawn
+        let popup_block = Block::default()
+            .title("Y/N")
+            .borders(Borders::NONE)
+            .style(Style::default().fg(Color::DarkGray));
+
+        let exit_text = Text::styled(
+            "Would you like to output the buffer as json? (y/n)",
+            Style::default().fg(Color::Red),
+        );
+
+        // the 'trim: false' will stop the text from being cut off when over the edge fo the block
+        let exit_paragraph = Paragraph::new(exit_text)
+            .block(popup_block)
+            .wrap(Wrap { trim: false } );
+
+        let area = centered_rect(60, 25, f.size());
+        f.render_widget(exit_paragraph, area);
     }
 }
 
@@ -143,5 +185,5 @@ fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
             Constraint::Percentage(percent_x),
             Constraint::Percentage((100 - percent_x) / 2),
         ])
-        .split(popup_layout[1])[1] // return the middle chunk
+        .split(popup_layout[1])[1]; // return the middle chunk
 }
